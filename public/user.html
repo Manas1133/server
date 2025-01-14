@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="weatherApp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Monitoring Dashboard</title>
+  
+  <!-- Include required libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.3.1/justgage.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  
+  <!-- Styling -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff8a00, #e52e71);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #fff;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    }
+    .weather-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .weather-widget {
+      background: linear-gradient(145deg, #ffffff, #f0f0f0);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .gauge-container {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+    }
+    a {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #ff5733;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      display: inline-block;
+      text-align: center;
+    }
+    a:hover {
+      background-color: #e94e26;
+    }
+  </style>
+</head>
+<body ng-controller="WeatherController">
+
+  <h1>Weather Monitoring Dashboard</h1>
+
+  <div class="weather-container">
+    <div class="weather-widget">
+      <h3>Temperature (°C)</h3>
+      <div id="temperature" class="gauge-container"></div>
+    </div>
+    <div class="weather-widget">
+      <h3>Humidity (%)</h3>
+      <div id="humidity" class="gauge-container"></div>
+    </div>
+    <div class="weather-widget">
+      <h3>Pressure (hPa)</h3>
+      <div id="pressure" class="gauge-container"></div>
+    </div>
+    <div class="weather-widget">
+      <h3>Solar Radiation (W/m²)</h3>
+      <div id="solar" class="gauge-container"></div>
+    </div>
+    <div class="weather-widget">
+      <h3>UV Radiation</h3>
+      <div id="uv" class="gauge-container"></div>
+    </div>
+    <div class="weather-widget">
+      <h3>Soil Moisture (%)</h3>
+      <div id="soilMoisture" class="gauge-container"></div>
+    </div>
+    <div class="weather-widget">
+      <h3>Leaf Wetness</h3>
+      <div id="leafWetness" class="gauge-container"></div>
+    </div>
+    <div class="weather-widget">
+      <h3>Evaporation (mm/day)</h3>
+      <div id="evaporation" class="gauge-container"></div>
+    </div>
+  </div>
+
+  <a href="config.html">Go to Configuration</a>
+
+  <script>
+    // Establish WebSocket connection
+    const socket = io("http://localhost:3000");
+
+    // Create gauges for each weather parameter
+    let temperatureGauge, humidityGauge, pressureGauge, solarGauge, uvGauge, soilMoistureGauge, leafWetnessGauge, evaporationGauge;
+
+    // Initialize gauges
+    window.onload = () => {
+      temperatureGauge = new JustGage({
+        id: "temperature",
+        value: 0,
+        min: -10,
+        max: 50,
+        title: "Temperature (°C)",
+        gaugeWidthScale: 0.2
+      });
+
+      humidityGauge = new JustGage({
+        id: "humidity",
+        value: 0,
+        min: 0,
+        max: 100,
+        title: "Humidity (%)",
+        gaugeWidthScale: 0.2
+      });
+
+      pressureGauge = new JustGage({
+        id: "pressure",
+        value: 1013,
+        min: 900,
+        max: 1100,
+        title: "Pressure (hPa)",
+        gaugeWidthScale: 0.2
+      });
+
+      solarGauge = new JustGage({
+        id: "solar",
+        value: 0,
+        min: 0,
+        max: 2000,
+        title: "Solar Radiation (W/m²)",
+        gaugeWidthScale: 0.2
+      });
+
+      uvGauge = new JustGage({
+        id: "uv",
+        value: 0,
+        min: 0,
+        max: 11,
+        title: "UV Radiation",
+        gaugeWidthScale: 0.2
+      });
+
+      soilMoistureGauge = new JustGage({
+        id: "soilMoisture",
+        value: 0,
+        min: 0,
+        max: 100,
+        title: "Soil Moisture (%)",
+        gaugeWidthScale: 0.2
+      });
+
+      leafWetnessGauge = new JustGage({
+        id: "leafWetness",
+        value: 0,
+        min: 0,
+        max: 100,
+        title: "Leaf Wetness",
+        gaugeWidthScale: 0.2
+      });
+
+      evaporationGauge = new JustGage({
+        id: "evaporation",
+        value: 0,
+        min: 0,
+        max: 10,
+        title: "Evaporation (mm/day)",
+        gaugeWidthScale: 0.2
+      });
+    };
+
+    // Update gauges dynamically from server
+    socket.on("updateWeatherData", (data) => {
+      temperatureGauge.refresh(data.field1 || 0);
+      humidityGauge.refresh(data.field2 || 0);
+      pressureGauge.refresh(data.field3 || 0);
+      solarGauge.refresh(data.field4 || 0);
+      uvGauge.refresh(data.field5 || 0);
+      soilMoistureGauge.refresh(data.field6 || 0);
+      leafWetnessGauge.refresh(data.field7 || 0);
+      evaporationGauge.refresh(data.field8 || 0);
+    });
+  </script>
+
+</body>
+</html>

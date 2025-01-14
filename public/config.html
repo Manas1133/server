@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff8a00, #e52e71);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .config-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+    .config-item {
+      margin-bottom: 15px;
+    }
+    label {
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #ff5733;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e52e71;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Configuration Settings</h1>
+
+  <div class="config-container">
+    <div class="config-item">
+      <label for="samplingRate">Sampling Rate (seconds)</label>
+      <input type="number" id="samplingRate" value="5" min="1" max="60">
+    </div>
+
+    <div class="config-item">
+      <label for="communicationProtocol">Communication Protocol</label>
+      <select id="communicationProtocol">
+        <option value="Wi-Fi">Wi-Fi</option>
+        <option value="GSM">GSM</option>
+        <option value="LoRa">LoRa</option>
+        <option value="NB-IoT">NB-IoT</option>
+      </select>
+    </div>
+
+    <div class="config-item">
+      <label for="temperatureRange">Temperature Range (°C)</label>
+      <input type="text" id="temperatureRange" value="0-50">
+    </div>
+
+    <div class="config-item">
+      <label for="humidityRange">Humidity Range (%)</label>
+      <input type="text" id="humidityRange" value="0-100">
+    </div>
+
+    <div class="config-item">
+      <label for="pressureRange">Pressure Range (hPa)</label>
+      <input type="text" id="pressureRange" value="900-1100">
+    </div>
+
+    <div class="config-item">
+      <label for="windSpeedRange">Wind Speed Range (km/h)</label>
+      <input type="text" id="windSpeedRange" value="0-50">
+    </div>
+
+    <div class="config-item">
+      <label for="solarRange">Solar Radiation Range (W/m²)</label>
+      <input type="text" id="solarRange" value="0-1000">
+    </div>
+
+    <div class="config-item">
+      <label for="uvRange">UV Radiation Range</label>
+      <input type="text" id="uvRange" value="0-10">
+    </div>
+
+    <button onclick="updateConfiguration()">Save Configuration</button>
+  </div>
+
+  <button onclick="window.location.href='user.html'">Back to Dashboard</button>
+
+  <script>
+    function updateConfiguration() {
+      const samplingRate = document.getElementById('samplingRate').value;
+      const communicationProtocol = document.getElementById('communicationProtocol').value;
+      const temperatureRange = document.getElementById('temperatureRange').value;
+      const humidityRange = document.getElementById('humidityRange').value;
+      const pressureRange = document.getElementById('pressureRange').value;
+      const windSpeedRange = document.getElementById('windSpeedRange').value;
+      const solarRange = document.getElementById('solarRange').value;
+      const uvRange = document.getElementById('uvRange').value;
+
+      console.log('Updated Configuration:');
+      console.log('Sampling Rate:', samplingRate);
+      console.log('Communication Protocol:', communicationProtocol);
+      console.log('Temperature Range:', temperatureRange);
+      console.log('Humidity Range:', humidityRange);
+      console.log('Pressure Range:', pressureRange);
+      console.log('Wind Speed Range:', windSpeedRange);
+      console.log('Solar Radiation Range:', solarRange);
+      console.log('UV Radiation Range:', uvRange);
+    }
+  </script>
+
+</body>
+</html>

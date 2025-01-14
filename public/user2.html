@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Monitoring Dashboard - Input</title>
+  <style>
+    /* Body Styling */
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #6a11cb, #2575fc); /* Gradient from purple to blue */
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: white;
+      text-align: center;
+    }
+
+    /* Form Styling */
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    label {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      background-color: #f9f9f9;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="number"]:focus, input[type="text"]:focus {
+      border-color: #4facfe;
+      outline: none;
+      background-color: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1.2rem;
+      background-color: #4facfe;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #3b8ccf;
+    }
+
+    button:active {
+      background-color: #2a6b9d;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      form {
+        padding: 15px;
+      }
+
+      input[type="number"], input[type="text"] {
+        padding: 10px;
+      }
+
+      button {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Enter Weather Data</h1>
+  <form id="weatherForm">
+    <label for="day">Day:</label>
+    <input type="text" id="day" name="day" required><br>
+
+    <label for="temp">Temperature (°C):</label>
+    <input type="number" id="temp" name="temp" required><br>
+
+    <label for="humidity">Humidity (%):</label>
+    <input type="number" id="humidity" name="humidity" required><br>
+
+    <label for="pressure">Pressure (hPa):</label>
+    <input type="number" id="pressure" name="pressure" required><br>
+
+    <label for="solar">Solar Radiation (W/m²):</label>
+    <input type="number" id="solar" name="solar" required><br>
+
+    <label for="uv">UV Radiation (Index):</label>
+    <input type="number" id="uv" name="uv" required><br>
+
+    <label for="soilMoisture">Soil Moisture (%):</label>
+    <input type="number" id="soilMoisture" name="soilMoisture" required><br>
+
+    <label for="leafWetness">Leaf Wetness (%):</label>
+    <input type="number" id="leafWetness" name="leafWetness" required><br>
+
+    <label for="evaporation">Evaporation (mm):</label>
+    <input type="number" id="evaporation" name="evaporation" required><br>
+
+    <label for="windSpeed">Wind Speed (km/h):</label>
+    <input type="number" id="windSpeed" name="windSpeed" required><br>
+
+    <label for="precipitation">Precipitation (mm):</label>
+    <input type="number" id="precipitation" name="precipitation" required><br>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    // Handle form submission
+    document.getElementById('weatherForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(this);
+      const weatherData = {
+        day: formData.get('day'),
+        temp: formData.get('temp'),
+        humidity: formData.get('humidity'),
+        pressure: formData.get('pressure'),
+        solar: formData.get('solar'),
+        uv: formData.get('uv'),
+        soilMoisture: formData.get('soilMoisture'),
+        leafWetness: formData.get('leafWetness'),
+        evaporation: formData.get('evaporation'),
+        windSpeed: formData.get('windSpeed'),
+        precipitation: formData.get('precipitation')
+      };
+
+      // Log weather data to ensure it's correct
+      console.log(weatherData);
+
+      // Add your API key here (replace 'your-api-key' with your actual key)
+      const apiKey = '123';  // Set the API key here
+
+      // Send data to the server
+      fetch('http://localhost:3000/set-weather-data', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'API-KEY': apiKey  // Add the API key to the headers
+        },
+        body: JSON.stringify(weatherData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to submit data');
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert('Weather data updated!');
+      })
+      .catch(error => {
+        alert('Error: ' + error.message);
+        console.error(error);
+      });
+    });
+  </script>
+
+</body>
+</html>
